@@ -17,6 +17,10 @@ Consult these files whenever adding a new feature to ensure alignment with estab
 
 All spec files must be saved in this folder exclusively.
 
+### Plans (`docs/plans/`)
+
+All implementation plan files should be saved in this folder.
+
 ## Tech Stack
 
 - Next.js 15 (App Router)

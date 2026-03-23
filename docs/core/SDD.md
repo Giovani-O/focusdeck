@@ -8,7 +8,8 @@
 | Language | TypeScript | Non-negotiable at mid-level |
 | Styling | Tailwind CSS | Fast to use, widely adopted |
 | State | React hooks only (no library) | The entire point of this project |
-| Testing | Not in scope for this exercise | |
+| Testing | Not in scope for this exercise |
+| Linting | Biome
 
 No external state management library. No data fetching library. This is intentional — the goal is to practice hooks in isolation.
 
