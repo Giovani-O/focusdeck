@@ -1,6 +1,6 @@
-export type TimerMode = 'work' | 'short-break' | 'long-break';
+export type TimerMode = "work" | "short-break" | "long-break";
 
-export type TimerStatus = 'idle' | 'running' | 'paused';
+export type TimerStatus = "idle" | "running" | "paused";
 
 export interface TimerSettings {
   workDuration: number;

@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import type { TimerSettings } from '@/types/timer';
+import { useState } from "react";
+import type { TimerSettings } from "@/types/timer";
+import { toMinutes, toSeconds, handleKeyDown } from "@/hooks/utils";
 
 interface SettingsPanelProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
   settings: TimerSettings;
-}
-
-function toMinutes(seconds: number): number {
-  return Math.round(seconds / 60);
+  setSettings: (settings: TimerSettings) => void;
 }
 
 function ChevronIcon({ isOpen }: { isOpen: boolean }) {
@@ -16,13 +16,13 @@ function ChevronIcon({ isOpen }: { isOpen: boolean }) {
     <svg
       aria-hidden="true"
       className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
-        isOpen ? 'rotate-180' : ''
+        isOpen ? "rotate-180" : ""
       }`}
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
     >
-      <title>{isOpen ? 'Collapse settings' : 'Expand settings'}</title>
+      <title>{isOpen ? "Collapse settings" : "Expand settings"}</title>
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -33,8 +33,19 @@ function ChevronIcon({ isOpen }: { isOpen: boolean }) {
   );
 }
 
-export default function SettingsPanel({ settings }: SettingsPanelProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function SettingsPanel({
+  isOpen,
+  setIsOpen,
+  settings,
+  setSettings,
+}: SettingsPanelProps) {
+  const [draftSettings, setDraftSettings] = useState<TimerSettings>(settings);
+
+  const handleApplySettings = () => {
+    setSettings(draftSettings);
+    console.log("DRAFT_SETTINGS", draftSettings);
+    setIsOpen(false);
+  };
 
   return (
     <div className="mt-6 p-4 bg-gray-800 rounded-lg">
@@ -59,7 +70,14 @@ export default function SettingsPanel({ settings }: SettingsPanelProps) {
             <input
               id="work-duration"
               type="number"
+              onKeyDown={handleKeyDown}
               defaultValue={toMinutes(settings.workDuration)}
+              onChange={(e) =>
+                setDraftSettings({
+                  ...draftSettings,
+                  workDuration: toSeconds(Number(e.target.value)),
+                })
+              }
               min={1}
               max={60}
               className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-violet-500"
@@ -75,7 +93,14 @@ export default function SettingsPanel({ settings }: SettingsPanelProps) {
             <input
               id="short-break-duration"
               type="number"
+              onKeyDown={handleKeyDown}
               defaultValue={toMinutes(settings.shortBreakDuration)}
+              onChange={(e) =>
+                setDraftSettings({
+                  ...draftSettings,
+                  shortBreakDuration: toSeconds(Number(e.target.value)),
+                })
+              }
               min={1}
               max={30}
               className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
@@ -91,7 +116,14 @@ export default function SettingsPanel({ settings }: SettingsPanelProps) {
             <input
               id="long-break-duration"
               type="number"
+              onKeyDown={handleKeyDown}
               defaultValue={toMinutes(settings.longBreakDuration)}
+              onChange={(e) =>
+                setDraftSettings({
+                  ...draftSettings,
+                  longBreakDuration: toSeconds(Number(e.target.value)),
+                })
+              }
               min={1}
               max={60}
               className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -100,6 +132,7 @@ export default function SettingsPanel({ settings }: SettingsPanelProps) {
           <button
             type="button"
             className="w-full px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg font-semibold transition-colors"
+            onClick={handleApplySettings}
           >
             Apply
           </button>
