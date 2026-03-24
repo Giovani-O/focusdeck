@@ -1,43 +1,50 @@
-import type { TimerStatus } from "@/types/timer";
+import type { TimerAction } from '@/hooks/useTimer';
+import type { TimerStatus } from '@/types/timer';
 
 interface TimerControlsProps {
   status: TimerStatus;
-  setTimerStatus: React.Dispatch<React.SetStateAction<TimerStatus>>;
+  dispatch: React.Dispatch<TimerAction>;
 }
 
 const BUTTON_VARIANTS = {
-  idle: "bg-violet-600 hover:bg-violet-500",
-  running: "bg-yellow-600 hover:bg-yellow-500",
-  paused: "bg-green-600 hover:bg-green-500",
+  idle: 'bg-violet-600 hover:bg-violet-500',
+  running: 'bg-yellow-600 hover:bg-yellow-500',
+  paused: 'bg-green-600 hover:bg-green-500',
 };
 
 const STATUS_LABELS = {
-  idle: "Start",
-  running: "Pause",
-  paused: "Resume",
+  idle: 'Start',
+  running: 'Pause',
+  paused: 'Resume',
 };
 
 export default function TimerControls({
   status,
-  setTimerStatus,
+  dispatch,
 }: TimerControlsProps) {
   const handleActionClick = () => {
     switch (status) {
-      case "idle":
-        setTimerStatus("running");
+      case 'idle':
+        dispatch({ type: 'START' });
         break;
-      case "running":
-        setTimerStatus("paused");
+      case 'running':
+        dispatch({ type: 'PAUSE' });
         break;
-      case "paused":
-        setTimerStatus("running");
+      case 'paused':
+        dispatch({ type: 'RESUME' });
         break;
     }
   };
 
-  // handleResetClick tambem reseta o timer
   const handleResetClick = () => {
-    setTimerStatus("idle");
+    dispatch({
+      type: 'RESET',
+      payload: {
+        workDuration: 1500,
+        shortBreakDuration: 300,
+        longBreakDuration: 900,
+      },
+    });
   };
 
   return (

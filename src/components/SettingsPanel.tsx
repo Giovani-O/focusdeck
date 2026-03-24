@@ -40,6 +40,10 @@ export default function SettingsPanel({
   setSettings,
 }: SettingsPanelProps) {
   const [draftSettings, setDraftSettings] = useState<TimerSettings>(settings);
+  const disableApply =
+    !draftSettings.workDuration ||
+    !draftSettings.shortBreakDuration ||
+    !draftSettings.longBreakDuration;
 
   const handleApplySettings = () => {
     setSettings(draftSettings);
@@ -133,6 +137,7 @@ export default function SettingsPanel({
             type="button"
             className="w-full px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg font-semibold transition-colors"
             onClick={handleApplySettings}
+            disabled={disableApply}
           >
             Apply
           </button>
