@@ -82,7 +82,15 @@ function timerReducer(state: TimerState, action: TimerAction): TimerState {
   }
 }
 
-export function useTimer(settings: TimerSettings) {
+export function useTimer(
+  settings: TimerSettings,
+  onSessionComplete?: (entry: {
+    sessionNumber: number;
+    mode: TimerMode;
+    duration: number;
+    completedAt: string;
+  }) => void,
+) {
   const [state, dispatch] = useReducer(timerReducer, settings, getInitialState);
 
   useEffect(() => {
@@ -97,9 +105,26 @@ export function useTimer(settings: TimerSettings) {
 
   useEffect(() => {
     if (state.timeLeft === 0 && state.status === 'running') {
+      if (onSessionComplete) {
+        const now = new Date();
+        const completedAt = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        onSessionComplete({
+          sessionNumber: state.sessionCount + 1,
+          mode: state.mode,
+          duration: settings.workDuration,
+          completedAt,
+        });
+      }
       dispatch({ type: 'COMPLETE_SESSION', payload: settings });
     }
-  }, [state.timeLeft, state.status, settings]);
+  }, [
+    state.timeLeft,
+    state.status,
+    state.sessionCount,
+    state.mode,
+    settings,
+    onSessionComplete,
+  ]);
 
   const prevSettingsRef = useRef<TimerSettings | null>(null);
 
